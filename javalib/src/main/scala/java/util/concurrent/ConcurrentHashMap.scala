@@ -1,6 +1,6 @@
 package java.util.concurrent
 
-import scala.collection.JavaConversions.{setAsJavaSet, asScalaSet, asJavaCollection}
+import scala.collection.JavaConversions.{asScalaSet, asJavaCollection, asJavaEnumeration}
 
 trait ConcurrentMap[K,V] extends java.util.Map[K,V] {
 
@@ -36,9 +36,7 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 							with java.util.concurrent.ConcurrentMap[K,V] 
 							with java.io.Serializable {
 
-	private val inner = new scala.collection.mutable.HashMap[K,V]()
-
-	def TEST(): scala.collection.mutable.HashMap[K,V] = inner
+	private lazy val inner = new scala.collection.mutable.HashMap[K,V]()
 
 	override def clear(): Unit = 
 		inner.clear
@@ -57,21 +55,27 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 		   case e: Throwable => false
 		 } 
 		
-	def elements(): Iterable[V] = inner.values
+	def elements(): java.util.Enumeration[V] =
+		asJavaEnumeration(inner.values.iterator)
 	
-	def entrySet() = 
-		setAsJavaSet(
-			inner.map{case (k,v) => new java.util.AbstractMap.SimpleImmutableEntry(k,v)}.toSet
-		)
+	def entrySet(): java.util.Set[java.util.Map.Entry[K,V]] =
+		throw new Exception("Missing needs to port a bit of collection lib")
+		//setAsJavaSet(
+		//	inner.map{case (k,v) => new java.util.AbstractMap.SimpleImmutableEntry(k,v)}.toSet
+		//)
+
 
 	override def get(key: Any): V =
-		inner(key.asInstanceOf[K])
+		inner.get(key.asInstanceOf[K]).getOrElse(null)
 		
 	override def isEmpty(): Boolean = inner.isEmpty
 
-	def keys(): Iterable[K] = inner.keys
+	def keys(): java.util.Enumeration[K] = 
+		asJavaEnumeration(inner.keys.iterator)
 
-	override def keySet(): java.util.Set[K] = setAsJavaSet(inner.keySet)
+	override def keySet(): java.util.Set[K] =
+		throw new Exception("Missing needs to port a bit of collection lib")
+		//setAsJavaSet(inner.keySet)
 	
 	override def put(key: K, value: V): V =
 		try {
@@ -130,6 +134,8 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 		inner.size
 	}
 
-	override def values: java.util.Collection[V] = asJavaCollection(inner.values)
+	override def values: java.util.Collection[V] = 
+		throw new Exception("Missing needs to port a bit of collection lib")
+		//asJavaCollection(inner.values)
 
 }

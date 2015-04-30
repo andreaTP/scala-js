@@ -134,8 +134,8 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 		onAll(m.entrySet.iterator){e: Map.Entry[K2,V2] => put(e.getKey, e.getValue)}
 	def clear(): Unit = 
 		entrySet.clear
-	def keySet(): Set[K] = 
-		new Set[K] {
+	def keySet(): java.util.Set[K] = 
+		new java.util.Set[K] {
 			override def size = self.size
 			override def contains(k: Any) = self.containsKey(k)
 			def add(x: K): Boolean = throw new UnsupportedOperationException()
@@ -156,8 +156,8 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 			def toArray[T](x: Array[T with Object]): Array[T with Object] = throw new UnsupportedOperationException()
 			def toArray(): Array[Object] = throw new UnsupportedOperationException()
 		}
-	def values(): Collection[V] = 
-		new Collection[V] {
+	def values(): java.util.Collection[V] = 
+		new java.util.Collection[V] {
 			override def size = self.size
 			override def contains(k: Any) = self.containsKey(k)
 			def add(x: V): Boolean = throw new UnsupportedOperationException()
