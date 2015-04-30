@@ -115,7 +115,12 @@ object ConcurrentHashMapTest extends JasmineTest {
 	  expect(chm.replace("ONE","two","one")).toEqual(true)
 	  expect(chm.get("ONE")).toEqual("one")
 
-
+	  try {
+	  	expect(chm.values.size).toEqual(1)	
+	  } catch {
+	  	case err: Throwable => err.printStackTrace
+	  }
+	  
 	  //come sopra... expect(chm.values.size).toEqual(1)
 		
    }

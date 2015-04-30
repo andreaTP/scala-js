@@ -154,7 +154,7 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 				} yield {self.remove(e)!=null}).exists(_ == true)
 			def retainAll(x: java.util.Collection[_]): Boolean = throw new UnsupportedOperationException()
 			def toArray[T](x: Array[T with Object]): Array[T with Object] = throw new UnsupportedOperationException()
-			def toArray(): Array[Object] = throw new UnsupportedOperationException()
+			def toArray(): Array[Any] = throw new UnsupportedOperationException()
 		}
 	def values(): java.util.Collection[V] = 
 		new java.util.Collection[V] {
@@ -176,7 +176,7 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 				} yield {self.remove(e)!=null}).exists(_ == true)
 			def retainAll(x: java.util.Collection[_]): Boolean = throw new UnsupportedOperationException()
 			def toArray[T](x: Array[T with Object]): Array[T with Object] = throw new UnsupportedOperationException()
-			def toArray(): Array[Object] = throw new UnsupportedOperationException()
+			def toArray(): Array[Any] = throw new UnsupportedOperationException()
 		}
 	override def equals(o: Any): Boolean =
 		if (o==this) true

@@ -26,7 +26,7 @@ abstract class AbstractCollection[E]() extends java.util.Collection[E] {
 	def contains(o: Any): Boolean = 
 		iterateAndCheck(iterator, {_.equals(o)})
 
-/*
+/* To be done
 	def add(e: E): Boolean
 	def addAll[E1 <: E](c: java.util.Collection[E1]): Boolean
 	def	clear(): Unit
