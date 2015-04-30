@@ -12,7 +12,7 @@ trait Map[K,V] {
 	def get(key: Any): V
 	def hashCode(): Int
 	def	isEmpty(): Boolean
-	def keySet(): Set[K]
+	def keySet(): java.util.Set[K]
 	def put(key: K, value: V): V
 	def putAll[K2 <: K, V2 <: V](m: Map[K2,V2]): Unit
 	def remove(key: Any): V
@@ -89,7 +89,7 @@ object AbstractMap {
 	}
 }
 
-abstract class AbstractMap[K,V]() extends Map[K,V] {
+abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 	self =>
 
 	@tailrec
