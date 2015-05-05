@@ -5,7 +5,8 @@ import scala.annotation.tailrec
 abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with java.util.Set[E] {
 
   override def equals(o: Any): Boolean = {
-    if (o == this) {
+    if (o eq this) true
+    else
       o match {
         case s: java.util.Collection[E] =>
           if (s.size == this.size) {
@@ -13,7 +14,6 @@ abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with jav
           } else false
         case _ => false
       }
-    } else false
   }
 
   override def hashCode(): Int = {
@@ -26,7 +26,6 @@ abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with jav
   }
 
   override final def removeAll(c: java.util.Collection[E]): Boolean = {
-
     @tailrec
     def remAll(iter: Iterator[E], comp: java.util.Collection[E], res: Boolean = false): Boolean = {
       if (iter.hasNext) {
