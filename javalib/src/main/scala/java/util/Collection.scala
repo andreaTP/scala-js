@@ -3,7 +3,7 @@ package java.util
 trait Collection[E] {
 
 	def add(e: E): Boolean
-	def addAll[E1 <:E](c: java.util.Collection[E]): Boolean
+	def addAll[E1 <:E](c: java.util.Collection[E1]): Boolean
 	def clear(): Unit
 	def contains(o: Any): Boolean
 	def containsAll(c: Collection[_]): Boolean
@@ -19,3 +19,5 @@ trait Collection[E] {
 	def toArray[X](a: Array[X]): Array[X]
 
 }
+
+trait Set[E] extends java.util.Collection[E] {}

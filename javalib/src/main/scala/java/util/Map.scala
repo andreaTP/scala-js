@@ -139,7 +139,7 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 			override def size = self.size
 			override def contains(k: Any) = self.containsKey(k)
 			def add(x: K): Boolean = throw new UnsupportedOperationException()
-			def addAll(x: java.util.Collection[_ <: K]): Boolean = throw new UnsupportedOperationException()
+			def addAll[K1 <: K](x: java.util.Collection[K1]): Boolean = throw new UnsupportedOperationException()
 			def clear(): Unit = self.clear
 			def containsAll(l: java.util.Collection[_]): Boolean = 
 				!(for {
@@ -148,12 +148,12 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 			def isEmpty(): Boolean = self.isEmpty
 			def iterator(): java.util.Iterator[K] = throw new UnsupportedOperationException()
 			def remove(x: Any): Boolean = self.remove(x) != null
-			def removeAll(l: java.util.Collection[_]): Boolean = 
+			def removeAll(l: java.util.Collection[K]): Boolean = 
 				!(for {
 					e <- l
 				} yield {self.remove(e)!=null}).exists(_ == true)
-			def retainAll(x: java.util.Collection[_]): Boolean = throw new UnsupportedOperationException()
-			def toArray[T](x: Array[T with Object]): Array[T with Object] = throw new UnsupportedOperationException()
+			def retainAll(x: java.util.Collection[K]): Boolean = throw new UnsupportedOperationException()
+			def toArray[T](x: Array[T]): Array[T] = throw new UnsupportedOperationException()
 			def toArray(): Array[Any] = throw new UnsupportedOperationException()
 		}
 	def values(): java.util.Collection[V] = 
@@ -161,7 +161,7 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 			override def size = self.size
 			override def contains(k: Any) = self.containsKey(k)
 			def add(x: V): Boolean = throw new UnsupportedOperationException()
-			def addAll(x: java.util.Collection[_ <: V]): Boolean = throw new UnsupportedOperationException()
+			def addAll[V1 <: V](x: java.util.Collection[V1]): Boolean = throw new UnsupportedOperationException()
 			def clear(): Unit = self.clear
 			def containsAll(l: java.util.Collection[_]): Boolean = 
 				!(for {
@@ -170,12 +170,12 @@ abstract class AbstractMap[K,V]() extends java.util.Map[K,V] {
 			def isEmpty(): Boolean = self.isEmpty
 			def iterator(): java.util.Iterator[V] = throw new UnsupportedOperationException()
 			def remove(x: Any): Boolean = self.remove(x) != null //Really do this in java???
-			def removeAll(l: java.util.Collection[_]): Boolean = 
+			def removeAll(l: java.util.Collection[V]): Boolean = 
 				!(for {
 					e <- l
 				} yield {self.remove(e)!=null}).exists(_ == true)
-			def retainAll(x: java.util.Collection[_]): Boolean = throw new UnsupportedOperationException()
-			def toArray[T](x: Array[T with Object]): Array[T with Object] = throw new UnsupportedOperationException()
+			def retainAll(x: java.util.Collection[V]): Boolean = throw new UnsupportedOperationException()
+			def toArray[T](x: Array[T]): Array[T] = throw new UnsupportedOperationException()
 			def toArray(): Array[Any] = throw new UnsupportedOperationException()
 		}
 	override def equals(o: Any): Boolean =

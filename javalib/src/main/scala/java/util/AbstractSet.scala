@@ -23,10 +23,10 @@ abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with jav
 
 		sumAll(iterator,0)
 	}
-	override def removeAll(c: java.util.Collection[_]): Boolean = {
+	override final def removeAll(c: java.util.Collection[E]): Boolean = {
 
 		@tailrec
-		def remAll(iter: Iterator[_], comp: java.util.Collection[_], res: Boolean = false): Boolean = {
+		def remAll(iter: Iterator[E], comp: java.util.Collection[E], res: Boolean = false): Boolean = {
 			if (iter.hasNext) {
 				val elem = iter.next
 				if (comp.contains(elem)) {

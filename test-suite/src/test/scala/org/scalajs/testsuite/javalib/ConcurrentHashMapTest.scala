@@ -79,25 +79,18 @@ object ConcurrentHashMapTest extends JasmineTest {
 
 	  expect(chm.elements.nextElement()).toEqual("one")
 
-	  //da fare
-	  //c'è da portare un sacco di roba... :-S
-	  /*
-	  try 
-	  	chm.entrySet
-	  catch {
-	  	case err: Throwable => err.printStackTrace
-	  }
-	  */
-	  //println(chm.entrySet.getClass.getSimpleName)	  
-	
-	
+	  expect(chm.values.iterator.next()).toEqual("one")
+	  expect(chm.values.size).toEqual(1)
+	  	
 	  expect(chm.keys().nextElement()).toEqual("ONE")
 
-	  //keySet... vedi sopra...
-	
-	/* needs Collection and so on...
-	import scala.collection.JavaConversions._
-	import scala.collection.mutable
+	  expect({
+	  	val entry = chm.entrySet().iterator.next()
+	  	entry.getKey+entry.getValue}).toEqual("ONEone")
+
+
+	  import scala.collection.JavaConversions._
+	  import scala.collection.mutable
 	  try {
 	  	val m = mutable.Map[String,String](
 	  		"X" -> "y"
@@ -106,7 +99,8 @@ object ConcurrentHashMapTest extends JasmineTest {
 	  } catch {
 	  	case err: Throwable => err.printStackTrace
 	  }
-	  */
+	  
+	  expect(chm.get("X")).toEqual("y")
 
 	  expect(chm.replace("ONE", "two")).toEqual("two")
 	  expect(chm.get("ONE")).toEqual("two")
@@ -115,13 +109,6 @@ object ConcurrentHashMapTest extends JasmineTest {
 	  expect(chm.replace("ONE","two","one")).toEqual(true)
 	  expect(chm.get("ONE")).toEqual("one")
 
-	  try {
-	  	expect(chm.values.size).toEqual(1)	
-	  } catch {
-	  	case err: Throwable => err.printStackTrace
-	  }
-	  
-	  //come sopra... expect(chm.values.size).toEqual(1)
 		
    }
 

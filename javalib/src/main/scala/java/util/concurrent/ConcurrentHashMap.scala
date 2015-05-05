@@ -1,6 +1,6 @@
 package java.util.concurrent
 
-import scala.collection.JavaConversions.{asScalaSet, asJavaCollection, asJavaEnumeration}
+import scala.collection.JavaConversions.{setAsJavaSet, asScalaSet, asJavaCollection, asJavaEnumeration}
 
 trait ConcurrentMap[K,V] extends java.util.Map[K,V] {
 
@@ -59,10 +59,9 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 		asJavaEnumeration(inner.values.iterator)
 	
 	def entrySet(): java.util.Set[java.util.Map.Entry[K,V]] =
-		throw new Exception("Missing needs to port a bit of collection lib")
-		//setAsJavaSet(
-		//	inner.map{case (k,v) => new java.util.AbstractMap.SimpleImmutableEntry(k,v)}.toSet
-		//)
+		setAsJavaSet(
+			inner.map{case (k,v) => new java.util.AbstractMap.SimpleImmutableEntry(k,v)}.toSet
+		)
 
 
 	override def get(key: Any): V =
@@ -73,9 +72,9 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 	def keys(): java.util.Enumeration[K] = 
 		asJavaEnumeration(inner.keys.iterator)
 
-	override def keySet(): java.util.Set[K] =
-		throw new Exception("Missing needs to port a bit of collection lib")
-		//setAsJavaSet(inner.keySet)
+	// This will not work if used with JDK 8
+	//override def keySet(): java.util.Set[K] =
+	//	setAsJavaSet(inner.keys.toSet)
 	
 	override def put(key: K, value: V): V =
 		try {
@@ -135,7 +134,6 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 	}
 
 	override def values: java.util.Collection[V] = 
-		throw new Exception("Missing needs to port a bit of collection lib")
-		//asJavaCollection(inner.values)
+		asJavaCollection(inner.values)
 
 }
