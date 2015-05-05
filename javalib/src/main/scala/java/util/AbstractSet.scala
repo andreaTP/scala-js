@@ -9,9 +9,8 @@ abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with jav
     else
       o match {
         case s: java.util.Collection[E] =>
-          if (s.size == this.size) {
-            containsAll(s)
-          } else false
+          if (s.size == this.size) containsAll(s)
+          else false
         case _ => false
       }
   }
@@ -33,14 +32,11 @@ abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with jav
         if (comp.contains(elem)) {
           remove(elem)
           remAll(iter, comp, true)
-        } else
-          remAll(iter, comp, res)
+        } else remAll(iter, comp, res)
       } else res
     }
 
-    if (size > c.size)
-      remAll(c.iterator, this)
-    else
-      remAll(iterator, c)
+    if (size > c.size) remAll(c.iterator, this)
+    else remAll(iterator, c)
   }
 }
