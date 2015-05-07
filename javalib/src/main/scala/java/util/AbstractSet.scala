@@ -5,19 +5,14 @@ import scala.annotation.tailrec
 abstract class AbstractSet[E]() extends java.util.AbstractCollection[E] with java.util.Set[E] {
 
   override def equals(o: Any): Boolean = {
-    def _equals =
+    if (o.asInstanceOf[AnyRef] eq this) true
+    else {
       o match {
         case s: java.util.Collection[E] =>
           if (s.size == this.size) containsAll(s)
           else false
         case _ => false
       }
-
-    o match {
-      case ar: AnyRef =>
-        if (this eq ar) true
-        else _equals
-      case _ => _equals
     }
   }
 

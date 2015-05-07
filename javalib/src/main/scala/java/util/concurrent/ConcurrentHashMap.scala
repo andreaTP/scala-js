@@ -60,8 +60,7 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
 
   def entrySet(): java.util.Set[java.util.Map.Entry[K, V]] =
     setAsJavaSet(
-      inner.map { case (k, v) => new java.util.AbstractMap.SimpleImmutableEntry(k, v) }.toSet
-    )
+        inner.map { case (k, v) => new java.util.AbstractMap.SimpleImmutableEntry(k, v) }.toSet)
 
   override def get(key: Any): V =
     inner.get(key.asInstanceOf[K]).getOrElse(null)
@@ -128,9 +127,8 @@ class ConcurrentHashMap[K >: Null, V >: Null](initialCapacity: Int = 16,
       case err: Throwable => false
     }
 
-  override def size() = {
+  override def size(): Int =
     inner.size
-  }
 
   override def values: java.util.Collection[V] =
     asJavaCollection(inner.values)

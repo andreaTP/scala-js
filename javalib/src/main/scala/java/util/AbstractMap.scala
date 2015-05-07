@@ -5,21 +5,15 @@ import scala.collection.JavaConversions._
 
 object AbstractMap {
 
-  private def equalsEntry[K, V](entry: Map.Entry[K, V], other: Any): Boolean = {
+  private def entryEquals[K, V](entry: Map.Entry[K, V], other: Any): Boolean = {
     other match {
-      case entry2: Map.Entry[_, _] =>
-        (
-          (entry.getKey == null && entry2.getKey == null) ||
-          entry.getKey.equals(entry2.getKey)
-        ) && (
-            (entry.getValue == null && entry2.getValue == null) ||
-            entry.getValue.equals(entry2.getValue)
-          )
+      case other: Map.Entry[_, _] =>
+        entry.getKey == other.getKey && entry.getValue == other.getValue
       case _ => false
     }
   }
 
-  private def calcHashCode[K, V](entry: Map.Entry[K, V]): Int = {
+  private def entryHashCode[K, V](entry: Map.Entry[K, V]): Int = {
     val keyHash =
       if (entry.getKey == null) 0
       else entry.getKey.hashCode
@@ -30,25 +24,24 @@ object AbstractMap {
     keyHash ^ valueHash
   }
 
-  class SimpleEntry[K, V](key: K, value: V) extends Map.Entry[K, V] with Serializable {
-    private var _key: K = key
-    private var _value: V = value
+  class SimpleEntry[K, V](private var _key: K, private var _value: V) extends Map.Entry[K, V] with Serializable {
 
     def this(entry: Map.Entry[K, V]) =
       this(entry.getKey, entry.getValue)
 
     override def equals(o: Any): Boolean =
-      equalsEntry(this, o)
+      entryEquals(this, o)
 
     def getKey(): K = _key
 
     def getValue(): V = _value
 
-    override def hashCode(): Int = calcHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
     def setValue(value: V): V = {
+      val oldValue = _value
       _value = value
-      _value
+      oldValue
     }
   }
 
@@ -57,37 +50,37 @@ object AbstractMap {
       this(entry.getKey, entry.getValue)
 
     override def equals(o: Any): Boolean =
-      equalsEntry(this, o)
+      entryEquals(this, o)
 
     def getKey(): K = key
 
     def getValue(): V = value
 
-    override def hashCode(): Int = calcHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
     def setValue(value: V): V = throw new UnsupportedOperationException()
   }
 }
 
-abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
-  self =>
+abstract class AbstractMap[K, V]() extends java.util.Map[K, V] { self =>
 
   @tailrec
   private def findFirst(i: Iterator[Map.Entry[K, V]])(f: (Map.Entry[K, V]) => Boolean,
-    fi: (Iterator[Map.Entry[K, V]]) => Unit = { _ => () }): Map.Entry[K, V] =
+      fi: (Iterator[Map.Entry[K, V]]) => Unit = { _ => () }): Map.Entry[K, V] =
     if (!i.hasNext) null
     else {
       val o = i.next
       if (f(o)) {
         fi(i)
         o
-      } else findFirst(i)(f)
+      } else {
+        findFirst(i)(f)
+      }
     }
 
   @tailrec
   private def onAll[IK, IV](i: Iterator[Map.Entry[IK, IV]])(f: (Map.Entry[IK, IV]) => Unit): Unit =
-    if (!i.hasNext) return
-    else {
+    if (i.hasNext) {
       f(i.next)
       onAll(i)(f)
     }
@@ -103,16 +96,19 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
     get(key) != null
 
   def get(key: Any): V = {
-    val res = findFirst(entrySet.iterator)({ x => key.equals(x.getKey) })
-    if (res == null) res.asInstanceOf[V]
+    val res = findFirst(entrySet.iterator)({ x => key == x.getKey })
+    if (res == null) null.asInstanceOf[V]
     else res.getValue
   }
 
   def put(key: K, value: V): V =
     throw new UnsupportedOperationException()
 
-  def remove(key: Any): V =
-    findFirst(entrySet.iterator)({ x => key.equals(x.getKey) }, _.remove()).getValue
+  def remove(key: Any): V = {
+    val item = findFirst(entrySet.iterator)({ x => key.equals(x.getKey) }, _.remove())
+    if (item eq null) null.asInstanceOf[V]
+    else item.getValue
+  }
 
   def putAll[K2 <: K, V2 <: V](m: Map[K2, V2]): Unit =
     onAll(m.entrySet.iterator) { e: Map.Entry[K2, V2] => put(e.getKey, e.getValue) }
@@ -125,13 +121,15 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
       override def size = self.size
 
       override def contains(k: Any) = self.containsKey(k)
+
       def containsAll(l: java.util.Collection[_]): Boolean =
         !(for {
           e <- l
         } yield { self.containsKey(e) }).exists(_ == false) //To be verified
 
       def add(x: K): Boolean = throw new UnsupportedOperationException()
-      def addAll[K1 <: K](x: java.util.Collection[K1]): Boolean = throw new UnsupportedOperationException()
+      def addAll[K1 <: K](x: java.util.Collection[K1]): Boolean = 
+        throw new UnsupportedOperationException()
 
       def clear(): Unit = self.clear
 
@@ -140,6 +138,7 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
       def iterator(): java.util.Iterator[K] = throw new UnsupportedOperationException()
 
       def remove(x: Any): Boolean = self.remove(x) != null
+
       def removeAll(l: java.util.Collection[K]): Boolean =
         !(for {
           e <- l
@@ -149,7 +148,6 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
 
       def toArray[T](x: Array[T]): Array[T] = throw new UnsupportedOperationException()
       def toArray(): Array[Any] = throw new UnsupportedOperationException()
-
     }
 
   def values(): java.util.Collection[V] =
@@ -172,6 +170,7 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
       def iterator(): java.util.Iterator[V] = throw new UnsupportedOperationException()
 
       def remove(x: Any): Boolean = self.remove(x) != null //Really do this in java???
+      
       def removeAll(l: java.util.Collection[V]): Boolean =
         !(for {
           e <- l
@@ -181,14 +180,13 @@ abstract class AbstractMap[K, V]() extends java.util.Map[K, V] {
 
       def toArray[T](x: Array[T]): Array[T] = throw new UnsupportedOperationException()
       def toArray(): Array[Any] = throw new UnsupportedOperationException()
-
     }
 
   override def equals(o: Any): Boolean =
-    if (o == this) true
+    if (o.asInstanceOf[AnyRef] eq this) true
     else {
       o match {
-        case m: Map[K, V] =>
+        case m: Map[_, _] =>
           if (self.size == m.size) {
             !(for {
               e <- entrySet

@@ -1,18 +1,20 @@
 package org.scalajs.testsuite.javalib
 
-import language.implicitConversions
-
 import scala.language.implicitConversions
+import scala.collection.JavaConversions._
+import scala.collection.mutable
 
 import org.scalajs.jasminetest.JasmineTest
+
+import java.util.concurrent.ConcurrentHashMap
 
 object ConcurrentHashMapTest extends JasmineTest {
 
   describe("java.util.concurrent.ConcurrentHashMap") {
 
     it("should store strings") {
-      val chm = new java.util.concurrent.ConcurrentHashMap[String, String]()
-      assert ( chm != null )
+      val chm = new ConcurrentHashMap[String, String]()
+      assert(chm != null)
 
       expect(chm.size()).toEqual(0)
       chm.put("ONE", "one")
@@ -24,8 +26,8 @@ object ConcurrentHashMapTest extends JasmineTest {
     }
 
     it("should store integers") {
-      val chm = new java.util.concurrent.ConcurrentHashMap[Int, Int]()
-      assert ( chm != null )
+      val chm = new ConcurrentHashMap[Int, Int]()
+      assert(chm != null)
 
       chm.put(1, 1)
       expect(chm.size()).toEqual(1)
@@ -36,8 +38,8 @@ object ConcurrentHashMapTest extends JasmineTest {
     it("should store custom objects") {
       case class TestObj(num: Int)
 
-      val chm = new java.util.concurrent.ConcurrentHashMap[TestObj, TestObj]()
-      assert ( chm != null )
+      val chm = new ConcurrentHashMap[TestObj, TestObj]()
+      assert(chm != null)
 
       chm.put(TestObj(1), TestObj(1))
       expect(chm.size()).toEqual(1)
@@ -46,8 +48,8 @@ object ConcurrentHashMapTest extends JasmineTest {
     }
 
     it("should remove stored elements") {
-      val chm = new java.util.concurrent.ConcurrentHashMap[String, String]()
-      assert ( chm != null )
+      val chm = new ConcurrentHashMap[String, String]()
+      assert(chm != null)
 
       chm.put("ONE", "one")
       expect(chm.size()).toEqual(1)
@@ -57,8 +59,8 @@ object ConcurrentHashMapTest extends JasmineTest {
     }
 
     it("should behave like expected on every method") {
-      val chm = new java.util.concurrent.ConcurrentHashMap[String, String]()
-      assert ( chm != () )
+      val chm = new ConcurrentHashMap[String, String]()
+      assert(chm != ())
       chm.put("ONE", "one")
       expect(chm.size()).toEqual(1)
       chm.clear
@@ -84,17 +86,11 @@ object ConcurrentHashMapTest extends JasmineTest {
         entry.getKey + entry.getValue
       }).toEqual("ONEone")
 
-      import scala.collection.JavaConversions._
-      import scala.collection.mutable
-      try {
-        val m = mutable.Map[String, String](
-          "X" -> "y"
-        )
-        chm.putAll(mutableMapAsJavaMap(m))
-      } catch {
-        case err: Throwable => err.printStackTrace
-      }
 
+      val m = mutable.Map[String, String](
+          "X" -> "y")
+      chm.putAll(mutableMapAsJavaMap(m))
+      
       expect(chm.get("X")).toEqual("y")
 
       expect(chm.replace("ONE", "two")).toEqual("two")
