@@ -271,8 +271,14 @@ private[runtime] object RuntimeString {
   def toLowerCase(thiz: String): String =
     specialJSStringOps(thiz).toLowerCase()
 
+  def toLowerCase(thiz: String, locale: java.util.Locale): String =
+    specialJSStringOps(thiz).toLowerCase()
+
   @inline
   def toUpperCase(thiz: String): String =
+    specialJSStringOps(thiz).toUpperCase()
+
+  def toUpperCase(thiz: String, locale: java.util.Locale): String =
     specialJSStringOps(thiz).toUpperCase()
 
   @inline
