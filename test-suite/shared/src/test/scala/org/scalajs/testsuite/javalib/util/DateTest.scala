@@ -16,6 +16,8 @@ import org.junit.Test
   * tests the implementation of the java standard library Date
   */
 class DateTest {
+  //scala.scalajs.js.Dynamic.global.eval("process.env.TZ = 'Etc/UTC'")
+  scala.scalajs.js.Dynamic.global.eval("process.env.TZ = 'Etc/GMT-1'")
 
   @Test def compareTo(): Unit = {
     def compare(x: Date, y: Date): Int = {
@@ -102,5 +104,9 @@ class DateTest {
     assertEquals("3 Nov 1997 05:23:27 GMT", new Date(Date.UTC(97, 10, 3, 5, 23, 27)).toGMTString)
     assertEquals("5 Jan 1902 08:01:09 GMT", new Date(Date.UTC(1, 12, 5, 8, 1, 9)).toGMTString)
     assertEquals("9 Jan 2900 05:03:04 GMT", new Date(Date.UTC(1000, 0, 9, 5, 3, 4)).toGMTString)
+  }
+
+  @Test def bugFounder(): Unit = {
+    assertEquals(8, new Date(1491381282242L).getHours())
   }
 }
